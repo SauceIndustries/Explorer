@@ -16,10 +16,12 @@ class Sort
 
     private SortOrder $order;
 
-    public function __construct(string $field, string|SortOrder $order = SortOrder::ASCENDING)
+    private ?string $nestedPath;
+
+    public function __construct(string $field, string|SortOrder $order = SortOrder::ASCENDING, $nestedPath = null)
     {
         $this->field = $field;
-        
+        $this->nestedPath = $nestedPath;
         if (is_string($order)) {
             $this->order = SortOrder::fromString($order);
         } else {
@@ -29,6 +31,10 @@ class Sort
 
     public function build(): array
     {
-        return [$this->field => $this->order->build()];
+        $result = [$this->field => $this->order->build()];
+        if ($this->nestedPath) {
+            $result[$this->field]['nested_path'] = $this->nestedPath;
+        }
+        return $result;
     }
 }

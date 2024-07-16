@@ -123,7 +123,7 @@ class ScoutSearchCommandBuilderTest extends TestCase
         $command->setSort([new Sort('id')]);
 
         self::assertTrue($command->hasSort());
-        self::assertSame([['id' => 'asc']], $command->getSort());
+        self::assertSame([['id' => ['order' => 'asc']]], $command->getSort());
 
         $command->setSort([]);
 
@@ -133,7 +133,7 @@ class ScoutSearchCommandBuilderTest extends TestCase
         $command->setSort([new Sort('id', 'desc')]);
 
         self::assertTrue($command->hasSort());
-        self::assertSame([['id' => 'desc']], $command->getSort());
+        self::assertSame([['id' => ['order' => 'desc']]], $command->getSort());
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Expected one of: "asc", "desc". Got: "invalid"');
@@ -150,7 +150,7 @@ class ScoutSearchCommandBuilderTest extends TestCase
         $command->setSort([new Sort('id')]);
         
         self::assertTrue($command->hasSort());
-        self::assertSame([['id' => 'asc']], $command->getSort());
+        self::assertSame([['id' => ['order' => 'asc']]], $command->getSort());
         
         $command->setSort([]);
         
@@ -160,7 +160,7 @@ class ScoutSearchCommandBuilderTest extends TestCase
         $command->setSort([new Sort('id', SortOrder::for('desc'))]);
         
         self::assertTrue($command->hasSort());
-        self::assertSame([['id' => ['missing' => '_last', 'order' => 'desc']]], $command->getSort());
+        self::assertEqualsCanonicalizing([['id' => ['missing' => '_last', 'order' => 'desc']]], $command->getSort());
         
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Expected one of: "asc", "desc". Got: "invalid"');
@@ -216,7 +216,7 @@ class ScoutSearchCommandBuilderTest extends TestCase
 
         $subject = ScoutSearchCommandBuilder::wrap($builder);
 
-        self::assertSame([['id' => 'asc'], ['name' => 'asc']], $subject->getSort());
+        self::assertEqualsCanonicalizing([['id' => ['order' => 'asc']], ['name' => ['order' => 'asc']]], $subject->getSort());
     }
 
     public function test_it_can_get_the_fields_from_scout_builder(): void

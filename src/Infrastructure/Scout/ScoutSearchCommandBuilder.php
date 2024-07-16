@@ -308,7 +308,7 @@ class ScoutSearchCommandBuilder implements SearchCommandInterface
     private static function getSorts(Builder $builder): array
     {
         return array_map(static function($order) {
-            return $order instanceof Sort ? $order : new Sort($order['column'], $order['direction']);
+            return $order instanceof Sort ? $order : new Sort($order['column'], $order['direction'], $order['nestedPath'] ?? null);
         }, $builder->orders);
     }
 }

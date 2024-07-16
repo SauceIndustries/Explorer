@@ -12,7 +12,7 @@ final class SortOrderTest extends TestCase
     {
         $sort = SortOrder::for(SortOrder::DESCENDING);
         
-        Assert::assertSame([
+        Assert::assertEqualsCanonicalizing([
             'missing' => SortOrder::MISSING_LAST,
             'order' => SortOrder::DESCENDING
         ], $sort->build());
@@ -21,10 +21,10 @@ final class SortOrderTest extends TestCase
     /**
      * @dataProvider provideSortOrderStrings
      */
-    public function test_sort_order_can_be_created_from_sort_string(string $expectedResult, string $sortString): void
+    public function test_sort_order_can_be_created_from_sort_string(array $expectedResult, string $sortString): void
     {
         $subject = SortOrder::fromString($sortString);
-        Assert::assertSame($expectedResult, $subject->build());
+        Assert::assertEqualsCanonicalizing($expectedResult, $subject->build());
     }
     
     /**
@@ -33,13 +33,13 @@ final class SortOrderTest extends TestCase
     public function test_sort_order_can_be_created_from_sort_string_and_missing(array $expectedResult, string $sortString, string $missing): void
     {
         $subject = SortOrder::for($sortString, $missing);
-        Assert::assertSame($expectedResult, $subject->build());
+        Assert::assertEqualsCanonicalizing($expectedResult, $subject->build());
     }
     
     public function provideSortOrderStrings(): iterable
     {
-        yield 'asc' => ['asc', 'asc'];
-        yield 'desc' => ['desc', 'desc'];
+        yield 'asc' => [['order' => 'asc'], 'asc'];
+        yield 'desc' => [['order' => 'desc'], 'desc'];
     }
     
     public function provideMissingSortOrderStrings(): iterable

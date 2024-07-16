@@ -40,13 +40,11 @@ class SortOrder
     
     public function build(): array|string
     {
-        if (is_null($this->missing)) {
-            return $this->order;
+        $result = ['order' => $this->order];
+        if (!is_null($this->missing)) {
+            $result['missing'] = $this->missing;
         }
-        
-        return [
-            'missing' => $this->missing,
-            'order' => $this->order
-        ];
+
+        return $result;
     }
 }

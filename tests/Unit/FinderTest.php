@@ -15,6 +15,7 @@ use JeroenG\Explorer\Domain\Query\Query;
 use JeroenG\Explorer\Domain\Syntax\Compound\BoolQuery;
 use JeroenG\Explorer\Domain\Syntax\Matching;
 use JeroenG\Explorer\Domain\Syntax\Sort;
+use JeroenG\Explorer\Domain\Syntax\SortOrder;
 use JeroenG\Explorer\Domain\Syntax\Term;
 use JeroenG\Explorer\Infrastructure\Elastic\Finder;
 use JeroenG\Explorer\Infrastructure\Scout\ScoutSearchCommandBuilder;
@@ -177,7 +178,9 @@ class FinderTest extends MockeryTestCase
                         ],
                     ],
                     'sort' => [
-                        ['id' => 'desc'],
+                        ['id' => [
+                            'order' => 'desc'
+                        ]],
                     ],
                 ],
             ])
@@ -190,7 +193,7 @@ class FinderTest extends MockeryTestCase
 
         $query = Query::with(new BoolQuery());
         $builder = new SearchCommand(self::TEST_INDEX, $query);
-        $query->setSort([new Sort('id', Sort::DESCENDING)]);
+        $query->setSort([new Sort('id', SortOrder::DESCENDING)]);
 
         $subject = new Finder($client, $builder);
         $results = $subject->find();
