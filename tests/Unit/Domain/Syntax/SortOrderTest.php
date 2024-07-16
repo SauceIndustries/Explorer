@@ -12,9 +12,9 @@ final class SortOrderTest extends TestCase
     {
         $sort = SortOrder::for(SortOrder::DESCENDING);
         
-        Assert::assertEqualsCanonicalizing([
+        Assert::assertSame([
+            'order' => SortOrder::DESCENDING,
             'missing' => SortOrder::MISSING_LAST,
-            'order' => SortOrder::DESCENDING
         ], $sort->build());
     }
     
@@ -24,7 +24,7 @@ final class SortOrderTest extends TestCase
     public function test_sort_order_can_be_created_from_sort_string(array $expectedResult, string $sortString): void
     {
         $subject = SortOrder::fromString($sortString);
-        Assert::assertEqualsCanonicalizing($expectedResult, $subject->build());
+        Assert::assertSame($expectedResult, $subject->build());
     }
     
     /**
@@ -33,7 +33,7 @@ final class SortOrderTest extends TestCase
     public function test_sort_order_can_be_created_from_sort_string_and_missing(array $expectedResult, string $sortString, string $missing): void
     {
         $subject = SortOrder::for($sortString, $missing);
-        Assert::assertEqualsCanonicalizing($expectedResult, $subject->build());
+        Assert::assertSame($expectedResult, $subject->build());
     }
     
     public function provideSortOrderStrings(): iterable
@@ -44,9 +44,9 @@ final class SortOrderTest extends TestCase
     
     public function provideMissingSortOrderStrings(): iterable
     {
-        yield 'asc order with _last missing' => [['missing' => '_last', 'order' => 'asc'], 'asc', '_last'];
-        yield 'desc order with _last missing' => [['missing' => '_last', 'order' => 'desc'], 'desc', '_last'];
-        yield 'asc order with _first missing' => [['missing' => '_first', 'order' => 'asc'], 'asc', '_first'];
-        yield 'desc order with _first missing' => [['missing' => '_first', 'order' => 'desc'], 'desc', '_first'];
+        yield 'asc order with _last missing' => [['order' => 'asc', 'missing' => '_last'], 'asc', '_last'];
+        yield 'desc order with _last missing' => [['order' => 'desc', 'missing' => '_last'], 'desc', '_last'];
+        yield 'asc order with _first missing' => [['order' => 'asc', 'missing' => '_first'], 'asc', '_first'];
+        yield 'desc order with _first missing' => [['order' => 'desc', 'missing' => '_first'], 'desc', '_first'];
     }    
 }

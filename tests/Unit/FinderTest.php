@@ -201,6 +201,45 @@ class FinderTest extends MockeryTestCase
         self::assertCount(1, $results);
     }
 
+    public function test_it_accepts_a_sortable_query_with_nested_sort(): void
+    {
+        $client = Mockery::mock(Client::class);
+        $client->expects('search')
+            ->with([
+                'index' => self::TEST_INDEX,
+                'body' => [
+                    'query' => [
+                        'bool' => [
+                            'must' => [],
+                            'should' => [],
+                            'filter' => [],
+                        ],
+                    ],
+                    'sort' => [
+                        ['foreign_model.name' => [
+                            'order' => 'desc',
+                            'nested_path' => 'foreign_model',
+                        ]],
+                    ],
+                ],
+            ])
+            ->andReturn([
+                'hits' => [
+                    'total' => ['value' => 1],
+                    'hits' => [$this->hit()],
+                ],
+            ]);
+
+        $query = Query::with(new BoolQuery());
+        $builder = new SearchCommand(self::TEST_INDEX, $query);
+        $query->setSort([new Sort('foreign_model.name', SortOrder::DESCENDING, 'foreign_model')]);
+
+        $subject = new Finder($client, $builder);
+        $results = $subject->find();
+
+        self::assertCount(1, $results);
+    }
+
     public function test_it_must_provide_offset_and_limit_for_pagination(): void
     {
         $client = Mockery::mock(Client::class);

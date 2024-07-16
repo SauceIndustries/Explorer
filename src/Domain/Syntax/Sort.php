@@ -32,7 +32,7 @@ class Sort
     public function build(): array
     {
         $result = [$this->field => $this->order->build()];
-        if ($this->nestedPath) {
+        if (!empty($this->nestedPath)) {
             $result[$this->field]['nested_path'] = $this->nestedPath;
         }
         return $result;

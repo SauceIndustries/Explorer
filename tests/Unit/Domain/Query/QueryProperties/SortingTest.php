@@ -19,6 +19,17 @@ final class SortingTest extends TestCase
 
         self::assertSame([ 'sort' => [ [ ':fld:' => ['order' => 'desc'] ]]],$sort->build());
     }
+
+    public function test_it_builds_sorting_with_nested(): void
+    {
+        $sort = Sorting::for(
+            new Sort('foreign_model.name', SortOrder::DESCENDING, 'foreign_model'),
+        );
+
+        $expected = [ 'sort' => [ [ 'foreign_model.name' => ['order' => 'desc', 'nested_path' => 'foreign_model'] ]]];
+        $result = $sort->build();
+        self::assertSame($expected,$result);
+    }
     
     public function test_it_builds_sorting_from_sort_order(): void
     {
@@ -26,7 +37,7 @@ final class SortingTest extends TestCase
             new Sort(':fld:', SortOrder::for(SortOrder::DESCENDING, SortOrder::MISSING_FIRST)),
         );
         
-        self::assertEqualsCanonicalizing([ 'sort' => [ [ ':fld:' => ['missing' => '_first', 'order' => 'desc'] ]]],$sort->build());
+        self::assertSame([ 'sort' => [ [ ':fld:' => ['order' => 'desc', 'missing' => '_first'] ]]],$sort->build());
     }
 
     public function test_it_combines(): void
@@ -51,15 +62,15 @@ final class SortingTest extends TestCase
         $result = $a->combine($b, $c, $d, $e);
 
         self::assertNotSame($a->build(), $result->build());
-        self::assertEqualsCanonicalizing([
+        self::assertSame([
             'sort' => [
                 [ ':fld1:' => ['order' => 'desc'] ],
                 [ ':fld2:' => ['order' => 'desc'] ],
                 [ ':fld3:' => ['order' => 'desc'] ],
                 [ ':fld4:' => ['order' => 'desc'] ],
                 [ ':fld5:' => ['order' => 'desc'] ],
-                [ ':fld6:' => ['missing' => '_last', 'order' => 'desc']],
-                [ ':fld7:' => ['missing' => '_first', 'order' => 'desc']]
+                [ ':fld6:' => ['order' => 'desc', 'missing' => '_last', ]],
+                [ ':fld7:' => ['order' => 'desc', 'missing' => '_first', ]]
             ],
         ], $result->build());
     }

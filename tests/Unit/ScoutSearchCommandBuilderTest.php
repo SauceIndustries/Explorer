@@ -160,7 +160,7 @@ class ScoutSearchCommandBuilderTest extends TestCase
         $command->setSort([new Sort('id', SortOrder::for('desc'))]);
         
         self::assertTrue($command->hasSort());
-        self::assertEqualsCanonicalizing([['id' => ['missing' => '_last', 'order' => 'desc']]], $command->getSort());
+        self::assertSame([['id' => ['order' => 'desc', 'missing' => '_last']]], $command->getSort());
         
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Expected one of: "asc", "desc". Got: "invalid"');
@@ -216,7 +216,7 @@ class ScoutSearchCommandBuilderTest extends TestCase
 
         $subject = ScoutSearchCommandBuilder::wrap($builder);
 
-        self::assertEqualsCanonicalizing([['id' => ['order' => 'asc']], ['name' => ['order' => 'asc']]], $subject->getSort());
+        self::assertSame([['id' => ['order' => 'asc']], ['name' => ['order' => 'asc']]], $subject->getSort());
     }
 
     public function test_it_can_get_the_fields_from_scout_builder(): void
